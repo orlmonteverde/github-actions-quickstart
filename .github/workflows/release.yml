@@ -9,94 +9,19 @@ on:
       - master
 
 jobs:
-  release-linux-386:
-    name: release linux/386
+  releases-matrix:
+    name: Release Go Binary
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: ["386", amd64]
     steps:
-      - uses: actions/checkout@master
-      - name: compile and release
-        uses: ngs/go-release.action@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
-          GOARCH: "386"
-          GOOS: linux
-          EXTRA_FILES: "LICENSE"
-          CMD_PATH: "./cmd/github-actions-quickstart"
-  release-linux-amd64:
-    name: release linux/amd64
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: compile and release
-        uses: ngs/go-release.action@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
-          GOARCH: amd64
-          GOOS: linux
-          EXTRA_FILES: "LICENSE"
-          CMD_PATH: "./cmd/github-actions-quickstart"
-  release-linux-arm:
-    name: release linux/386
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: compile and release
-        uses: ngs/go-release.action@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
-          GOARCH: "arm"
-          GOOS: linux
-          EXTRA_FILES: "LICENSE"
-          CMD_PATH: "./cmd/github-actions-quickstart"
-  release-linux-arm64:
-    name: release linux/amd64
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: compile and release
-        uses: ngs/go-release.action@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
-          GOARCH: arm64
-          GOOS: linux
-          EXTRA_FILES: "LICENSE"
-          CMD_PATH: "./cmd/github-actions-quickstart"
-  release-darwin-amd64:
-    name: release darwin/amd64
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: compile and release
-        uses: ngs/go-release.action@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
-          GOARCH: amd64
-          GOOS: darwin
-          EXTRA_FILES: "LICENSE"
-          CMD_PATH: "./cmd/github-actions-quickstart"
-  release-windows-386:
-    name: release windows/386
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: compile and release
-        uses: ngs/go-release.action@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
-          GOARCH: "386"
-          GOOS: windows
-          EXTRA_FILES: "LICENSE"
-          CMD_PATH: "./cmd/github-actions-quickstart"
-  release-windows-amd64:
-    name: release windows/amd64
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: compile and release
-        uses: ngs/go-release.action@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
-          GOARCH: amd64
-          GOOS: windows
-          EXTRA_FILES: "LICENSE"
-          CMD_PATH: "./cmd/github-actions-quickstart"
+      - uses: actions/checkout@v2
+      - uses: wangyoucao577/go-release-action@master
+        with:
+          github_token: ${{ secrets.GH_TOKEN_REPO }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          goversion: "1.14"
+          project_path: "./cmd/github-actions-quickstart"
